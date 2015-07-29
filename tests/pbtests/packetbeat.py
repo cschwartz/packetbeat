@@ -8,7 +8,6 @@ import time
 import yaml
 from datetime import datetime, timedelta
 
-
 class Proc(object):
     """
     Slim wrapper on subprocess.Popen that redirects
@@ -71,7 +70,7 @@ class TestCase(unittest.TestCase):
 
         if debug_selectors:
             args.extend(["-d", ",".join(debug_selectors)])
-
+        print(" ".join(args))
         with open(os.path.join(self.working_dir, output), "wb") as outputfile:
             proc = subprocess.Popen(args,
                                     stdout=outputfile,
@@ -99,6 +98,7 @@ class TestCase(unittest.TestCase):
             args.extend(["-d", ",".join(debug_selectors)])
 
         proc = Proc(args, os.path.join(self.working_dir, output))
+
         proc.start()
         return proc
 

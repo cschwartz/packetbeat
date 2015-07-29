@@ -377,6 +377,22 @@ event:
           description: >
             Cursor identifier that came in the OP_REPLY. This must be the value that came from the database.
 
+    - name: openflow
+      type: group
+      description: OpenFlow specific event fields.
+      fields:
+        - name: openflow.version
+          type: string
+          description: >
+            The OpenFlow protocol version
+        - name: openflow.type
+          type: string
+          description: >
+            The OpenFlow message Type
+        - name: openflow.transaction_id
+          type: string
+          description: >
+            The OpenFlow transaction id
 raw:
   type: group
   description: These fields contain the raw transaction data.

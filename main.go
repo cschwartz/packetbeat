@@ -27,6 +27,7 @@ import (
 	"github.com/elastic/packetbeat/protos/http"
 	"github.com/elastic/packetbeat/protos/mongodb"
 	"github.com/elastic/packetbeat/protos/mysql"
+	"github.com/elastic/packetbeat/protos/openflow"
 	"github.com/elastic/packetbeat/protos/pgsql"
 	"github.com/elastic/packetbeat/protos/redis"
 	"github.com/elastic/packetbeat/protos/tcp"
@@ -39,12 +40,13 @@ var Version = "1.0.0-beta2"
 var Name = "packetbeat"
 
 var EnabledProtocolPlugins map[protos.Protocol]protos.ProtocolPlugin = map[protos.Protocol]protos.ProtocolPlugin{
-	protos.HttpProtocol:    new(http.Http),
-	protos.MysqlProtocol:   new(mysql.Mysql),
-	protos.PgsqlProtocol:   new(pgsql.Pgsql),
-	protos.RedisProtocol:   new(redis.Redis),
-	protos.ThriftProtocol:  new(thrift.Thrift),
-	protos.MongodbProtocol: new(mongodb.Mongodb),
+	protos.HttpProtocol:     new(http.Http),
+	protos.MysqlProtocol:    new(mysql.Mysql),
+	protos.PgsqlProtocol:    new(pgsql.Pgsql),
+	protos.RedisProtocol:    new(redis.Redis),
+	protos.ThriftProtocol:   new(thrift.Thrift),
+	protos.MongodbProtocol:  new(mongodb.Mongodb),
+	protos.OpenFlowProtocol: new(openflow.OpenFlow),
 }
 
 var EnabledFilterPlugins map[filters.Filter]filters.FilterPlugin = map[filters.Filter]filters.FilterPlugin{
@@ -236,7 +238,7 @@ func main() {
 
 	// Startup successful, disable stderr logging if requested by
 	// cmdline flag
-	logp.SetStderr()
+	//logp.SetStderr()
 
 	logp.Debug("main", "Waiting for the sniffer to finish")
 

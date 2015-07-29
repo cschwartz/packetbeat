@@ -41,6 +41,7 @@ type Protocols struct {
 	Pgsql   Pgsql
 	Redis   Redis
 	Thrift  Thrift
+	OpenFlow OpenFlow
 }
 
 type Http struct {
@@ -96,6 +97,12 @@ type Thrift struct {
 
 type Redis struct {
 	Ports         []int
+	Send_request  *bool
+	Send_response *bool
+}
+
+type OpenFlow struct {
+	Ports					[]int
 	Send_request  *bool
 	Send_response *bool
 }
