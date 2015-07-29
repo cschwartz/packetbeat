@@ -238,7 +238,7 @@ func main() {
 
 	// Startup successful, disable stderr logging if requested by
 	// cmdline flag
-	//logp.SetStderr()
+	logp.SetStderr()
 
 	logp.Debug("main", "Waiting for the sniffer to finish")
 

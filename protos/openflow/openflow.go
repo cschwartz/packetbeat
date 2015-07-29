@@ -217,6 +217,26 @@ func (openFlow *OpenFlow) handleOpenFlow(m *OpenFlowMessage, tcptuple *common.Tc
 		openFlow.transactionsMap[tuple.Hashable()] = trans
 	}
 
+	trans.BytesIn = m.Size
+
+	trans.cmdline = m.CmdlineTuple
+	trans.ts = m.Ts
+	trans.Ts = int64(trans.ts.UnixNano() / 1000) // transactions have microseconds resolution
+	trans.JsTs = m.Ts
+	trans.Src = common.Endpoint{
+		Ip:   m.TcpTuple.Src_ip.String(),
+		Port: m.TcpTuple.Src_port,
+		Proc: string(m.CmdlineTuple.Src),
+	}
+	trans.Dst = common.Endpoint{
+		Ip:   m.TcpTuple.Dst_ip.String(),
+		Port: m.TcpTuple.Dst_port,
+		Proc: string(m.CmdlineTuple.Dst),
+	}
+	if m.Direction == tcp.TcpDirectionReverse {
+		trans.Src, trans.Dst = trans.Dst, trans.Src
+	}
+
 	trans.OpenFlow = common.MapStr{}
 
 	trans.IsError = m.IsError
