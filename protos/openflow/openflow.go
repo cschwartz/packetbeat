@@ -1,10 +1,10 @@
 package openflow
 
 import (
-	"time"
 	"bytes"
 	"encoding/binary"
-//	"fmt"
+	//	"fmt"
+	"time"
 
 	"github.com/elastic/libbeat/common"
 	"github.com/elastic/libbeat/logp"
@@ -15,8 +15,7 @@ import (
 	"github.com/elastic/packetbeat/protos/tcp"
 )
 
-type OpenFlowContent interface  {
-  debug()
+type OpenFlowContent interface {
 	parse(data []byte)
 	fillOutEvent(event *common.MapStr)
 }
@@ -30,17 +29,17 @@ type OpenFlowMessage struct {
 	CmdlineTuple *common.CmdlineTuple
 	Direction    uint8
 
-	IsError   bool
-	Message   string
-	Size      int
+	IsError bool
+	Message string
+	Size    int
 
 	parseState int
 	start      int
 	end        int
 
 	version     uint8
-	messageType uint8
-	length			uint16
+	messageType ofp_type
+	length      uint16
 	transaction uint32
 
 	content OpenFlowContent
@@ -133,7 +132,6 @@ func (openflow *OpenFlow) GapInStream(tcptuple *common.TcpTuple, dir uint8,
 
 	return private, true
 }
-
 
 type OpenFlowPrivateData struct {
 	Data [2]*OpenFlowStream
@@ -254,15 +252,13 @@ func (openFlow *OpenFlow) handleOpenFlow(m *OpenFlowMessage, tcptuple *common.Tc
 	openFlow.publishTransaction(trans)
 }
 
-
 func (openflow OpenFlowMessage) fillOutEvent(event *common.MapStr) {
 	openFlowEvent := common.MapStr{}
-	openFlowEvent["version"] = OpenFlowVersion[openflow.version]
-	openFlowEvent["type"] = OpenFlowMessageType[openflow.messageType]
+	openFlowEvent["version"] = "1.0" //FIXME
+	openFlowEvent["type"] = openflow.messageType.String()
 	openFlowEvent["transaction_id"] = openflow.transaction
 
 	openflow.content.fillOutEvent(&openFlowEvent)
-
 
 	(*event)["openflow"] = openFlowEvent
 }
@@ -298,6 +294,7 @@ func (openflow *OpenFlow) ReceivedFin(tcptuple *common.TcpTuple, dir uint8,
 
 func openFlowMessageParser(s *OpenFlowStream) (bool, bool) {
 	m := s.message
+	m.start = s.parseOffset
 
 	if s.parseOffset < len(s.data) {
 
@@ -309,23 +306,12 @@ func openFlowMessageParser(s *OpenFlowStream) (bool, bool) {
 			binary.Read(bytes.NewReader(header[2:4]), binary.BigEndian, &m.length)
 			binary.Read(bytes.NewReader(header[4:8]), binary.BigEndian, &m.transaction)
 
-			if len(s.data) < m.start + int(m.length) {
+			if len(s.data) < m.start+int(m.length) {
 				return true, false
 			}
 
-			m.start = s.parseOffset
-
-			messageData := s.data[s.parseOffset+8:s.parseOffset + int(m.length)]
-			if m.messageType == 10 {
-				packetInMessage := &OpenFlowPacketIn{}
-				packetInMessage.parse(messageData)
-				m.content = packetInMessage
-			} else {
-				unImplementedMessage := &OpenFlowUnImplemented{}
-				unImplementedMessage.parse(messageData)
-				m.content = unImplementedMessage
-			}
-
+			m.content = packetFromType(m.version, m.messageType)
+			m.content.parse(s.data[s.parseOffset+8 : s.parseOffset+int(m.length)])
 			s.parseOffset += int(m.length)
 
 			return true, true
@@ -340,4 +326,14 @@ func (stream *OpenFlowStream) PrepareForNewMessage() {
 	stream.parseOffset = 0
 	stream.message = &OpenFlowMessage{Ts: stream.message.Ts}
 	stream.message.Bulks = []string{}
+}
+
+func packetFromType(version uint8, packetType ofp_type) OpenFlowContent {
+	logp.Err("openflow", "Found packet type ", packetType)
+	if packet, ok := OpenFlowPacketTypes[packetType]; ok {
+		return packet
+	} else {
+		logp.Err("openflow", "Unknown message ", packetType)
+		return nil
+	}
 }
