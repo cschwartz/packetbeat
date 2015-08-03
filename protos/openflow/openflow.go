@@ -311,7 +311,7 @@ func openFlowMessageParser(s *OpenFlowStream) (bool, bool) {
 			}
 
 			m.content = packetFromType(m.version, m.messageType)
-			m.content.parse(s.data[s.parseOffset+8 : s.parseOffset+int(m.length)])
+			m.content.parse(s.data[s.parseOffset : s.parseOffset+int(m.length)])
 			s.parseOffset += int(m.length)
 
 			return true, true

@@ -62,7 +62,7 @@ func (m *message) parse(data []byte) {
 func (m message) fillOutEvent(event *common.MapStr) {
 }
 type stats_reply struct {
-  stats_type uint16
+  stats_type ofp_stats_type
   flags ofp_stats_reply_flags
 }
 
@@ -72,8 +72,8 @@ func (m *stats_reply) parse(data []byte) {
 }
 
 func (m stats_reply) fillOutEvent(event *common.MapStr) {
-  (*event)["stats_type"] = m.stats_type
-  (*event)["flags"] = m.flags
+  (*event)["stats_type"] = m.stats_type.String()
+  (*event)["flags"] = m.flags.String()
 }
 type aggregate_stats_reply struct {
   stats_type uint16
@@ -93,13 +93,13 @@ func (m *aggregate_stats_reply) parse(data []byte) {
 
 func (m aggregate_stats_reply) fillOutEvent(event *common.MapStr) {
   (*event)["stats_type"] = m.stats_type
-  (*event)["flags"] = m.flags
+  (*event)["flags"] = m.flags.String()
   (*event)["packet_count"] = m.packet_count
   (*event)["byte_count"] = m.byte_count
   (*event)["flow_count"] = m.flow_count
 }
 type stats_request struct {
-  stats_type uint16
+  stats_type ofp_stats_type
   flags ofp_stats_request_flags
 }
 
@@ -109,7 +109,7 @@ func (m *stats_request) parse(data []byte) {
 }
 
 func (m stats_request) fillOutEvent(event *common.MapStr) {
-  (*event)["stats_type"] = m.stats_type
+  (*event)["stats_type"] = m.stats_type.String()
   (*event)["flags"] = m.flags
 }
 type aggregate_stats_request struct {
@@ -160,7 +160,7 @@ func (m *bad_action_error_msg) parse(data []byte) {
 
 func (m bad_action_error_msg) fillOutEvent(event *common.MapStr) {
   (*event)["err_type"] = m.err_type
-  (*event)["code"] = m.code
+  (*event)["code"] = m.code.String()
 }
 type bad_request_error_msg struct {
   err_type uint16
@@ -176,7 +176,7 @@ func (m *bad_request_error_msg) parse(data []byte) {
 
 func (m bad_request_error_msg) fillOutEvent(event *common.MapStr) {
   (*event)["err_type"] = m.err_type
-  (*event)["code"] = m.code
+  (*event)["code"] = m.code.String()
 }
 type barrier_reply struct {
 }
@@ -223,7 +223,7 @@ func (m *experimenter_stats_reply) parse(data []byte) {
 
 func (m experimenter_stats_reply) fillOutEvent(event *common.MapStr) {
   (*event)["stats_type"] = m.stats_type
-  (*event)["flags"] = m.flags
+  (*event)["flags"] = m.flags.String()
   (*event)["experimenter"] = m.experimenter
 }
 type experimenter_stats_request struct {
@@ -267,7 +267,7 @@ func (m *desc_stats_reply) parse(data []byte) {
 
 func (m desc_stats_reply) fillOutEvent(event *common.MapStr) {
   (*event)["stats_type"] = m.stats_type
-  (*event)["flags"] = m.flags
+  (*event)["flags"] = m.flags.String()
   (*event)["mfr_desc"] = m.mfr_desc
   (*event)["hw_desc"] = m.hw_desc
   (*event)["sw_desc"] = m.sw_desc
@@ -329,7 +329,7 @@ func (m features_reply) fillOutEvent(event *common.MapStr) {
   (*event)["datapath_id"] = m.datapath_id
   (*event)["n_buffers"] = m.n_buffers
   (*event)["n_tables"] = m.n_tables
-  (*event)["capabilities"] = m.capabilities
+  (*event)["capabilities"] = m.capabilities.String()
   (*event)["actions"] = m.actions
   // ignore ports for the moment
 }
@@ -375,7 +375,7 @@ func (m flow_mod) fillOutEvent(event *common.MapStr) {
   (*event)["priority"] = m.priority
   (*event)["buffer_id"] = m.buffer_id
   (*event)["out_port"] = m.out_port
-  (*event)["flags"] = m.flags
+  (*event)["flags"] = m.flags.String()
   // ignore actions for the moment
 }
 type flow_add struct {
@@ -412,7 +412,7 @@ func (m flow_add) fillOutEvent(event *common.MapStr) {
   (*event)["priority"] = m.priority
   (*event)["buffer_id"] = m.buffer_id
   (*event)["out_port"] = m.out_port
-  (*event)["flags"] = m.flags
+  (*event)["flags"] = m.flags.String()
   // ignore actions for the moment
 }
 type flow_delete struct {
@@ -449,7 +449,7 @@ func (m flow_delete) fillOutEvent(event *common.MapStr) {
   (*event)["priority"] = m.priority
   (*event)["buffer_id"] = m.buffer_id
   (*event)["out_port"] = m.out_port
-  (*event)["flags"] = m.flags
+  (*event)["flags"] = m.flags.String()
   // ignore actions for the moment
 }
 type flow_delete_strict struct {
@@ -486,7 +486,7 @@ func (m flow_delete_strict) fillOutEvent(event *common.MapStr) {
   (*event)["priority"] = m.priority
   (*event)["buffer_id"] = m.buffer_id
   (*event)["out_port"] = m.out_port
-  (*event)["flags"] = m.flags
+  (*event)["flags"] = m.flags.String()
   // ignore actions for the moment
 }
 type flow_mod_failed_error_msg struct {
@@ -503,7 +503,7 @@ func (m *flow_mod_failed_error_msg) parse(data []byte) {
 
 func (m flow_mod_failed_error_msg) fillOutEvent(event *common.MapStr) {
   (*event)["err_type"] = m.err_type
-  (*event)["code"] = m.code
+  (*event)["code"] = m.code.String()
 }
 type flow_modify struct {
   match match_v1
@@ -539,7 +539,7 @@ func (m flow_modify) fillOutEvent(event *common.MapStr) {
   (*event)["priority"] = m.priority
   (*event)["buffer_id"] = m.buffer_id
   (*event)["out_port"] = m.out_port
-  (*event)["flags"] = m.flags
+  (*event)["flags"] = m.flags.String()
   // ignore actions for the moment
 }
 type flow_modify_strict struct {
@@ -576,14 +576,14 @@ func (m flow_modify_strict) fillOutEvent(event *common.MapStr) {
   (*event)["priority"] = m.priority
   (*event)["buffer_id"] = m.buffer_id
   (*event)["out_port"] = m.out_port
-  (*event)["flags"] = m.flags
+  (*event)["flags"] = m.flags.String()
   // ignore actions for the moment
 }
 type flow_removed struct {
   match match_v1
   cookie uint64
   priority uint16
-  reason uint8
+  reason ofp_flow_removed_reason
   duration_sec uint32
   duration_nsec uint32
   idle_timeout uint16
@@ -607,7 +607,7 @@ func (m flow_removed) fillOutEvent(event *common.MapStr) {
   (*event)["match"] = m.match
   (*event)["cookie"] = m.cookie
   (*event)["priority"] = m.priority
-  (*event)["reason"] = m.reason
+  (*event)["reason"] = m.reason.String()
   (*event)["duration_sec"] = m.duration_sec
   (*event)["duration_nsec"] = m.duration_nsec
   (*event)["idle_timeout"] = m.idle_timeout
@@ -667,7 +667,7 @@ func (m *flow_stats_reply) parse(data []byte) {
 
 func (m flow_stats_reply) fillOutEvent(event *common.MapStr) {
   (*event)["stats_type"] = m.stats_type
-  (*event)["flags"] = m.flags
+  (*event)["flags"] = m.flags.String()
   // ignore entries for the moment
 }
 type flow_stats_request struct {
@@ -704,7 +704,7 @@ func (m *get_config_reply) parse(data []byte) {
 }
 
 func (m get_config_reply) fillOutEvent(event *common.MapStr) {
-  (*event)["flags"] = m.flags
+  (*event)["flags"] = m.flags.String()
   (*event)["miss_send_len"] = m.miss_send_len
 }
 type get_config_request struct {
@@ -737,7 +737,7 @@ func (m *hello_failed_error_msg) parse(data []byte) {
 
 func (m hello_failed_error_msg) fillOutEvent(event *common.MapStr) {
   (*event)["err_type"] = m.err_type
-  (*event)["code"] = m.code
+  (*event)["code"] = m.code.String()
 }
 type match_v1 struct {
   wildcards uint32
@@ -790,7 +790,7 @@ type packet_in struct {
   buffer_id uint32
   total_len uint16
   in_port uint16
-  reason uint8
+  reason ofp_packet_in_reason
   data []byte
 }
 
@@ -806,7 +806,7 @@ func (m packet_in) fillOutEvent(event *common.MapStr) {
   (*event)["buffer_id"] = m.buffer_id
   (*event)["total_len"] = m.total_len
   (*event)["in_port"] = m.in_port
-  (*event)["reason"] = m.reason
+  (*event)["reason"] = m.reason.String()
 }
 type packet_out struct {
   buffer_id uint32
@@ -873,12 +873,12 @@ func (m port_desc) fillOutEvent(event *common.MapStr) {
   (*event)["port_no"] = m.port_no
   (*event)["hw_addr"] = m.hw_addr
   (*event)["name"] = m.name
-  (*event)["config"] = m.config
-  (*event)["state"] = m.state
-  (*event)["curr"] = m.curr
-  (*event)["advertised"] = m.advertised
-  (*event)["supported"] = m.supported
-  (*event)["peer"] = m.peer
+  (*event)["config"] = m.config.String()
+  (*event)["state"] = m.state.String()
+  (*event)["curr"] = m.curr.String()
+  (*event)["advertised"] = m.advertised.String()
+  (*event)["supported"] = m.supported.String()
+  (*event)["peer"] = m.peer.String()
 }
 type port_mod struct {
   port_no uint16
@@ -917,7 +917,7 @@ func (m *port_mod_failed_error_msg) parse(data []byte) {
 
 func (m port_mod_failed_error_msg) fillOutEvent(event *common.MapStr) {
   (*event)["err_type"] = m.err_type
-  (*event)["code"] = m.code
+  (*event)["code"] = m.code.String()
 }
 type port_stats_entry struct {
   port_no uint16
@@ -979,7 +979,7 @@ func (m *port_stats_reply) parse(data []byte) {
 
 func (m port_stats_reply) fillOutEvent(event *common.MapStr) {
   (*event)["stats_type"] = m.stats_type
-  (*event)["flags"] = m.flags
+  (*event)["flags"] = m.flags.String()
   // ignore entries for the moment
 }
 type port_stats_request struct {
@@ -1010,7 +1010,7 @@ func (m *port_status) parse(data []byte) {
 }
 
 func (m port_status) fillOutEvent(event *common.MapStr) {
-  (*event)["reason"] = m.reason
+  (*event)["reason"] = m.reason.String()
   (*event)["desc"] = m.desc
 }
 type queue_get_config_reply struct {
@@ -1051,7 +1051,7 @@ func (m *queue_op_failed_error_msg) parse(data []byte) {
 
 func (m queue_op_failed_error_msg) fillOutEvent(event *common.MapStr) {
   (*event)["err_type"] = m.err_type
-  (*event)["code"] = m.code
+  (*event)["code"] = m.code.String()
 }
 type queue_prop struct {
   len uint16
@@ -1114,7 +1114,7 @@ func (m *queue_stats_reply) parse(data []byte) {
 
 func (m queue_stats_reply) fillOutEvent(event *common.MapStr) {
   (*event)["stats_type"] = m.stats_type
-  (*event)["flags"] = m.flags
+  (*event)["flags"] = m.flags.String()
   // ignore entries for the moment
 }
 type queue_stats_request struct {
@@ -1148,7 +1148,7 @@ func (m *set_config) parse(data []byte) {
 }
 
 func (m set_config) fillOutEvent(event *common.MapStr) {
-  (*event)["flags"] = m.flags
+  (*event)["flags"] = m.flags.String()
   (*event)["miss_send_len"] = m.miss_send_len
 }
 type table_mod struct {
@@ -1207,7 +1207,7 @@ func (m *table_stats_reply) parse(data []byte) {
 
 func (m table_stats_reply) fillOutEvent(event *common.MapStr) {
   (*event)["stats_type"] = m.stats_type
-  (*event)["flags"] = m.flags
+  (*event)["flags"] = m.flags.String()
   // ignore entries for the moment
 }
 type table_stats_request struct {
