@@ -52,22 +52,21 @@ func TestOpenFlowParser_PacketIn(t *testing.T) {
 		t.Errorf("Invalid length '%d', expected '0'", stream.message.transaction)
 	}
 
-	stream.message.content.debug()
-	packetIn, ok := stream.message.content.(*OpenFlowPacketIn)
+	packetIn, ok := stream.message.content.(*packet_in)
 	if !ok {
-	 	t.Errorf("Invalid type")
+		t.Errorf("Invalid type")
 	}
 
-	if packetIn.bufferId != 0xffffffff {
-	 	t.Errorf("Invalid buffer id '%d', expected '0xffffffff'", packetIn.bufferId)
+	if packetIn.buffer_id != 0xffffffff {
+		t.Errorf("Invalid buffer id '%d', expected '0xffffffff'", packetIn.buffer_id)
 	}
 
-	if packetIn.totalLength != 85 {
-		t.Errorf("Invalid totalLength '%d', expected '85'", packetIn.totalLength)
+	if packetIn.total_len != 85 {
+		t.Errorf("Invalid totalLength '%d', expected '85'", packetIn.total_len)
 	}
 
-	if packetIn.inPort != 25 {
-		t.Errorf("Invalid inPort '%d', expected '25'", packetIn.inPort)
+	if packetIn.in_port != 25 {
+		t.Errorf("Invalid inPort '%d', expected '25'", packetIn.in_port)
 	}
 
 	if packetIn.reason != 1 {

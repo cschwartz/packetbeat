@@ -393,6 +393,23 @@ event:
           type: string
           description: >
             The OpenFlow transaction id
+        - name: openflow.reason
+          type: string
+          description: >
+            The reason for the packet_in message
+        - name: openflow.total_len
+          type: int
+          description: >
+            The total length of the open flow message
+        - name: openflow.in_port
+          type: int
+          description: >
+            The port where the packet triggering the packet_in message was received
+        - name: openflow.buffer_id
+          type: int
+          description: >
+            The location of the packet to be injected in the switches dataplane
+raw:
 raw:
   type: group
   description: These fields contain the raw transaction data.
